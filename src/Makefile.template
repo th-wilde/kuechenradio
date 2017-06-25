@@ -17,7 +17,7 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 $(ODIR)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-all: switchoff radio startup
+all: switchoff radio
 	
 switchoff: obj/switchoff.o
 	gcc -o $@ $^ $(CFLAGS) $(LIBS)
