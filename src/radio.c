@@ -83,6 +83,6 @@ int main(void) {
 	
 	display_quit();
 	
-	//system("sudo halt");
+	system("sudo halt");
 	
 } 
