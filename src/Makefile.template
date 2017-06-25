@@ -1,0 +1,51 @@
+IDIR =include
+CC=gcc
+CFLAGS=-I$(IDIR) -g -std=gnu11 -O3 
+
+ODIR=obj
+LDIR =lib
+
+LIBS=-lpthread -lwiringPi -lasound -lm
+
+_DEPS = 
+DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+
+_OBJ = switchoff.o input.o radio.o display.o string_s.o popen2.o mediactl.o Lcd.o
+OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+
+
+$(ODIR)/%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+all: switchoff radio startup
+	
+switchoff: obj/switchoff.o
+	gcc -o $@ $^ $(CFLAGS) $(LIBS)
+	
+radio: obj/input.o obj/display.o obj/string_s.o obj/mediactl.o obj/popen2.o obj/Lcd.o obj/radio.o
+	gcc -o $@ $^ $(CFLAGS) $(LIBS)
+	
+.PHONY: clean
+
+
+clean:
+	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ 
+	rm -f switchoff
+	rm -f radio
+	rm -f Makefile
+
+install: uninstall
+	mkdir -p $(HOME)/bin
+	cp ../resources/radio-gpiosetup.sh $(HOME)/bin
+	cp radio $(HOME)/bin
+	mkdir -p $(HOME)/.radio
+	cp -R ../resources/Radiostations $(HOME)/.radio
+	sudo -- sh -c "cp switchoff /lib/systemd/system-shutdown/; sed -i \"s/exit 0//g\" /etc/rc.local; echo \"$(HOME)/bin/radio-gpiosetup.sh\nsu -c \"$(HOME)/bin/radio\" pi &\nexit 0\" >> /etc/rc.local"
+	
+uninstall:
+	-killall radio
+	-sleep 3
+	-killall -9 radio
+	-rm -f $(HOME)/bin/radio
+	-rm -f $(HOME)/bin/radio-gpiosetup.sh
+	-sudo -- sh -c "rm -f /lib/systemd/system-shutdown/switchoff; sed -i \"s/.*radio.*//g\" /etc/rc.local;"

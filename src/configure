@@ -1,0 +1,21 @@
+#! /bin/bash
+cd `dirname $0`
+
+failed=0
+echo "CONFIGURE radio..."
+
+if [ $failed == 0 ]
+then
+	if [ ! -f /usr/include/wiringPi.h ]
+	then
+		echo "...wiringPi-Lib not found! Failed!"
+		exit 1
+	else
+		echo "...wiringPi-Lib found."
+		cp Makefile.template Makefile
+	fi
+	
+	echo "...done!"
+else
+	echo "...failed!"
+fi
