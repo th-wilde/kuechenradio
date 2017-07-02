@@ -92,6 +92,7 @@ void display_write(int line, char text[]){
 			display_offset2 = -1;
 		break;
 	}
+	initLcd();
 	pthread_mutex_unlock(&lcdUsage);
 	display_update();
 }

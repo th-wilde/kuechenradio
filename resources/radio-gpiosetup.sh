@@ -14,3 +14,5 @@ gpio export 7 out
 
 gpio -g mode 11 out
 gpio -g write 11 on
+
+sleep 1

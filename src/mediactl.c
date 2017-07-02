@@ -37,7 +37,7 @@ void *mpg123_read_stream_title(void *arg){
 			char displayline[DISPLAY_LINE_BUFFER];
 			strcpy_s(displayline, DISPLAY_LINE_BUFFER, station_name);
 			line[regex_groups[1].rm_eo] = 0x00;
-			strcpy_s(&displayline[strlen(displayline)], DISPLAY_LINE_BUFFER, " - ");
+			strcpy_s(&displayline[strlen(displayline)], DISPLAY_LINE_BUFFER, ": ");
 			strcat_s(displayline, DISPLAY_LINE_BUFFER, &line[regex_groups[1].rm_so]);
 			pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 			display_write(1, displayline);

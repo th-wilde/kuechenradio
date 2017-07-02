@@ -2,20 +2,38 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #include "input.h"
 #include "display.h"
 #include "mediactl.h"
 
 enum radio_state {VOLUME, STATION};
+static int input[2];
+
+void term(int signum)
+{
+	input_quit();
+	close(input[0]);
+	mediactl_quit();
+	display_write(1, " ");
+	display_write(2, " ");
+	display_quit();
+    exit(0);
+}
 
 int main(void) {
+	
+	//Register Term-SIgnal
+	struct sigaction action;
+    memset(&action, 0, sizeof(struct sigaction));
+    action.sa_handler = term;
+    sigaction(SIGTERM, &action, NULL);
 	
 	display_init();
 	
 	mediactl_init();
 	
-	int input[2];
 	pipe(input);
 	
 	input_init(input[1]);
